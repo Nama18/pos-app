@@ -1,11 +1,8 @@
 import { NestFactory } from '@nestjs/core';
-import { ExpressAdapter } from '@nestjs/platform-express';
 import { ValidationPipe, VersioningType } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import helmet from 'helmet';
-import express from 'express';
-import serverless from 'serverless-http';
 import { AppModule } from './app.module';
 
 async function bootstrap() {
@@ -65,50 +62,4 @@ async function bootstrap() {
   console.log(`API prefix: ${apiPrefix}`);
 }
 
-// Vercel serverless handler
-let cachedHandler: serverless.Handler;
-
-async function createHandler() {
-  if (cachedHandler) return cachedHandler;
-
-  const server = express();
-  const app = await NestFactory.create(AppModule, new ExpressAdapter(server));
-
-  const configService = app.get(ConfigService);
-  const apiPrefix = configService.get<string>('API_PREFIX', 'api/v1');
-
-  app.setGlobalPrefix(apiPrefix);
-
-  app.enableVersioning({
-    type: VersioningType.URI,
-  });
-
-  app.enableCors({
-    origin: ['*'],
-    credentials: true,
-  });
-
-  app.use(helmet());
-
-  app.useGlobalPipes(
-    new ValidationPipe({
-      whitelist: true,
-      transform: true,
-    }),
-  );
-
-  await app.init();
-  cachedHandler = serverless(server);
-  return cachedHandler;
-}
-
-const handler = async (req: any, res: any) => {
-  const h = await createHandler();
-  return h(req, res);
-};
-
-export default handler;
-
-if (process.env.VERCEL !== '1') {
-  bootstrap();
-}
+bootstrap();

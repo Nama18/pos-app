@@ -2,7 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Repository, Like } from 'typeorm';
 import { ConflictException, NotFoundException } from '@nestjs/common';
-import * as bcrypt from 'bcrypt';
+import * as bcrypt from 'bcryptjs';
 import { UsersService } from './users.service';
 import { User } from './entities/user.entity';
 import { Role } from './entities/role.enum';

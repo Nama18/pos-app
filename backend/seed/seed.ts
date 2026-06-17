@@ -1,5 +1,5 @@
 import 'reflect-metadata';
-import * as bcrypt from 'bcrypt';
+import * as bcrypt from 'bcryptjs';
 import AppDataSource from '../src/config/data-source';
 import { User } from '../src/users/entities/user.entity';
 import { Role } from '../src/users/entities/role.enum';

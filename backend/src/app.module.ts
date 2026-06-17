@@ -48,11 +48,9 @@ import { TransformInterceptor } from './common/interceptors/transform.intercepto
             type: 'postgres',
             url: dbUrl,
             autoLoadEntities: true,
-            synchronize: false,
+            synchronize: true,
             ssl: { rejectUnauthorized: false },
             logging: !isProduction,
-            migrations: [__dirname + '/migrations/*{.ts,.js}'],
-            migrationsRun: true,
           };
         }
 

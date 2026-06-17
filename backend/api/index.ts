@@ -4,13 +4,12 @@ import { ValidationPipe, VersioningType } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import helmet from 'helmet';
 import express from 'express';
-import serverless from 'serverless-http';
 import { AppModule } from '../src/app.module';
 
-let cachedHandler: serverless.Handler;
+let cachedServer: express.Express;
 
-async function bootstrap() {
-  if (cachedHandler) return cachedHandler;
+async function bootstrap(): Promise<express.Express> {
+  if (cachedServer) return cachedServer;
 
   const server = express();
   const app = await NestFactory.create(AppModule, new ExpressAdapter(server));
@@ -25,9 +24,10 @@ async function bootstrap() {
     type: VersioningType.URI,
   });
 
+  const origins = corsOrigin.split(',').map((o) => o.trim());
   app.enableCors({
-    origin: corsOrigin.split(',').map((o) => o.trim()),
-    credentials: true,
+    origin: origins.includes('*') ? '*' : origins,
+    credentials: !origins.includes('*'),
   });
 
   app.use(helmet());
@@ -40,11 +40,11 @@ async function bootstrap() {
   );
 
   await app.init();
-  cachedHandler = serverless(server);
-  return cachedHandler;
+  cachedServer = server;
+  return cachedServer;
 }
 
 export default async function handler(req: any, res: any) {
-  const h = await bootstrap();
-  return h(req, res);
+  const server = await bootstrap();
+  server(req, res);
 }

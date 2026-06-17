@@ -1,0 +1,108 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme inline {
+  --color-background: oklch(0.15 0.038 252);
+  --color-foreground: oklch(0.94 0.034 88);
+  --color-card: oklch(0.205 0.044 252 / 78%);
+  --color-primary: oklch(0.78 0.16 61);
+  --color-primary-foreground: oklch(0.15 0.038 252);
+  --color-accent: oklch(0.77 0.134 178);
+  --color-accent-foreground: oklch(0.15 0.038 252);
+  --color-secondary: oklch(0.25 0.06 244 / 74%);
+  --color-secondary-foreground: oklch(0.94 0.034 88);
+  --color-muted: oklch(0.26 0.052 252 / 64%);
+  --color-muted-foreground: oklch(0.73 0.042 88);
+  --color-border: oklch(0.98 0.02 88 / 14%);
+  --color-ring: oklch(0.8 0.15 178);
+  --color-destructive: oklch(0.68 0.21 31);
+  --color-destructive-foreground: oklch(0.94 0.034 88);
+
+  --color-chart-1: oklch(0.78 0.16 61);
+  --color-chart-2: oklch(0.77 0.134 178);
+  --color-chart-3: oklch(0.68 0.16 296);
+  --color-chart-4: oklch(0.72 0.18 31);
+  --color-chart-5: oklch(0.72 0.14 131);
+
+  --font-sans: 'IBM Plex Sans', ui-sans-serif, system-ui, sans-serif;
+  --font-display: 'Fraunces', ui-serif, Georgia, serif;
+  --font-mono: 'IBM Plex Mono', ui-monospace, 'SF Mono', monospace;
+
+  --radius-sm: 0.375rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
+  --radius-2xl: 1.5rem;
+}
+
+.light {
+  --color-background: oklch(0.96 0.02 88);
+  --color-foreground: oklch(0.15 0.038 252);
+  --color-card: oklch(0.98 0.015 88 / 80%);
+  --color-primary: oklch(0.65 0.18 61);
+  --color-primary-foreground: oklch(0.98 0.02 88);
+  --color-accent: oklch(0.6 0.15 178);
+  --color-accent-foreground: oklch(0.98 0.02 88);
+  --color-secondary: oklch(0.88 0.03 252 / 74%);
+  --color-secondary-foreground: oklch(0.2 0.04 252);
+  --color-muted: oklch(0.88 0.03 252 / 50%);
+  --color-muted-foreground: oklch(0.45 0.04 252);
+  --color-border: oklch(0.15 0.038 252 / 14%);
+  --color-ring: oklch(0.6 0.15 178);
+  --color-destructive: oklch(0.6 0.25 31);
+  --color-destructive-foreground: oklch(0.98 0.02 88);
+  --color-chart-1: oklch(0.65 0.18 61);
+  --color-chart-2: oklch(0.6 0.15 178);
+  --color-chart-3: oklch(0.55 0.18 296);
+  --color-chart-4: oklch(0.6 0.2 31);
+  --color-chart-5: oklch(0.6 0.16 131);
+}
+
+@layer base {
+  * { @apply border-border; }
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+    font-feature-settings: "ss01", "ss02", "cv01", "cv02";
+  }
+}
+
+.planner-bg {
+  background:
+    radial-gradient(ellipse 80% 50% at 50% -20%, oklch(0.78 0.16 61 / 8%), transparent),
+    radial-gradient(ellipse 50% 60% at 80% 80%, oklch(0.77 0.134 178 / 6%), transparent),
+    radial-gradient(ellipse 40% 50% at 10% 60%, oklch(0.68 0.16 296 / 5%), transparent),
+    var(--color-background);
+}
+
+.glass-panel {
+  background: var(--color-card);
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--color-border);
+  box-shadow: inset 0 1px 0 0 oklch(1 1 1 / 4%), 0 4px 24px oklch(0 0 0 / 20%);
+}
+
+.paper-card {
+  background: var(--color-card);
+  border: 1px solid var(--color-border);
+  box-shadow: 0 2px 12px oklch(0 0 0 / 15%), 0 1px 2px oklch(0 0 0 / 10%);
+}
+
+.blueprint-surface {
+  background-image:
+    linear-gradient(oklch(0.98 0.02 88 / 3%) 1px, transparent 1px),
+    linear-gradient(90deg, oklch(0.98 0.02 88 / 3%) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+.micro-label {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-weight: 600;
+}
+
+.command-strip {
+  background: linear-gradient(135deg, oklch(0.78 0.16 61), oklch(0.77 0.134 178), oklch(0.68 0.16 296));
+}

@@ -9,7 +9,7 @@ import { DataTable, type Column } from '@/components/shared/data-table'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { get } from '@/lib/api'
-import type { ApiResponse, PaginatedResponse, Customer } from '@/types'
+import type { ApiResponse, Customer } from '@/types'
 
 function formatDate(dateStr: string) {
   return new Date(dateStr).toLocaleDateString('en-US', {
@@ -26,7 +26,7 @@ export default function CustomersPage() {
   const { data, isLoading } = useQuery({
     queryKey: ['customers', page, search],
     queryFn: () =>
-      get<ApiResponse<PaginatedResponse<Customer>>>('/customers', {
+      get<ApiResponse<Customer[]>>('/customers', {
         params: { page, limit: 10, search },
       }),
   })

@@ -47,7 +47,6 @@ import { Separator } from '@/components/ui/separator'
 import { get, post } from '@/lib/api'
 import type {
   ApiResponse,
-  PaginatedResponse,
   Product,
   InventoryLog,
   InventoryType,
@@ -106,7 +105,7 @@ export default function InventoryPage() {
   const { data: historyRes, isLoading: historyLoading } = useQuery({
     queryKey: ['inventory-history', page],
     queryFn: () =>
-      get<ApiResponse<PaginatedResponse<InventoryLog>>>('/inventory', {
+      get<ApiResponse<InventoryLog[]>>('/inventory', {
         params: { page, limit: 10 },
       }),
   })

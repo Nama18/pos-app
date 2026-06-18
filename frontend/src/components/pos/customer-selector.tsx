@@ -29,7 +29,7 @@ export function CustomerSelector({ value, onChange }: CustomerSelectorProps) {
   const { data, isLoading } = useQuery({
     queryKey: ['pos-customers', search],
     queryFn: () =>
-      get<ApiResponse<{ data: Customer[]; meta: { total: number } }>>('/customers', {
+      get<ApiResponse<Customer[]>>('/customers', {
         params: { search, limit: 20 },
       }),
     enabled: open,

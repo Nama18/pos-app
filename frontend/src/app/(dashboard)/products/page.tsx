@@ -20,7 +20,7 @@ import {
 } from '@/components/ui/select'
 import { FilterBar, FilterChip } from '@/components/shared/filter-bar'
 import { get, del } from '@/lib/api'
-import type { ApiResponse, PaginatedResponse, Product, Category } from '@/types'
+import type { ApiResponse, Product, Category } from '@/types'
 
 function formatCurrency(value: number) {
   return new Intl.NumberFormat('id-ID', {
@@ -41,7 +41,7 @@ export default function ProductsPage() {
   const { data, isLoading } = useQuery({
     queryKey: ['products', page, search, categoryFilter],
     queryFn: () =>
-      get<ApiResponse<PaginatedResponse<Product>>>('/products', {
+      get<ApiResponse<Product[]>>('/products', {
         params: { page, limit: 10, search, categoryId: categoryFilter },
       }),
   })

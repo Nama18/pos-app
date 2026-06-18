@@ -15,11 +15,10 @@ import {
 
 import { PageHeader } from '@/components/shared/page-header'
 import { StatCard } from '@/components/shared/stat-card'
+import { DateRangePicker } from '@/components/shared/date-range-picker'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
 import {
   Table,
   TableBody,
@@ -29,6 +28,7 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import { get } from '@/lib/api'
+import { type DateRange } from 'react-day-picker'
 import type { ApiResponse } from '@/types'
 
 interface SalesSummary {
@@ -61,13 +61,16 @@ function formatDate(dateStr: string) {
 }
 
 export default function SalesReportPage() {
-  const today = new Date().toISOString().split('T')[0]
   const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)
-    .toISOString()
-    .split('T')[0]
+  const today = new Date()
 
-  const [startDate, setStartDate] = useState(sevenDaysAgo)
-  const [endDate, setEndDate] = useState(today)
+  const [dateRange, setDateRange] = useState<DateRange>({
+    from: sevenDaysAgo,
+    to: today,
+  })
+
+  const startDate = dateRange.from?.toISOString()
+  const endDate = dateRange.to?.toISOString()
 
   const { data: summaryRes, isLoading: summaryLoading } = useQuery({
     queryKey: ['sales-report-summary', startDate, endDate],
@@ -112,26 +115,10 @@ export default function SalesReportPage() {
       />
 
       <div className="flex flex-wrap items-end gap-4">
-        <div className="space-y-2">
-          <Label htmlFor="startDate">Start Date</Label>
-          <Input
-            id="startDate"
-            type="date"
-            value={startDate}
-            onChange={(e) => setStartDate(e.target.value)}
-            className="h-9"
-          />
-        </div>
-        <div className="space-y-2">
-          <Label htmlFor="endDate">End Date</Label>
-          <Input
-            id="endDate"
-            type="date"
-            value={endDate}
-            onChange={(e) => setEndDate(e.target.value)}
-            className="h-9"
-          />
-        </div>
+        <DateRangePicker
+          value={dateRange}
+          onChange={setDateRange}
+        />
         <Button variant="outline" size="sm" onClick={exportCSV} disabled={!salesData || salesData.length === 0} className="gap-2">
           <Download className="h-4 w-4" />
           Export CSV

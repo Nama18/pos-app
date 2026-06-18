@@ -4,7 +4,7 @@ import {
   BadRequestException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { DataSource, Repository } from 'typeorm';
+import { DataSource, Repository, Between, MoreThanOrEqual, LessThanOrEqual } from 'typeorm';
 import { Product } from '../products/entities/product.entity';
 import { InventoryLog, InventoryType } from './entities/inventory.entity';
 import { StockInDto } from './dto/stock-in.dto';
@@ -164,7 +164,7 @@ export class InventoryService {
     const {
       page = 1,
       limit = 10,
-      sortBy = 'created_at',
+      sortBy = 'createdAt',
       sortOrder = 'DESC',
       productId,
       type,
@@ -172,30 +172,31 @@ export class InventoryService {
       endDate,
     } = query;
 
-    const qb = this.inventoryLogRepo
-      .createQueryBuilder('log')
-      .leftJoinAndSelect('log.product', 'product')
-      .skip((page - 1) * limit)
-      .take(limit)
-      .orderBy(`log.${sortBy}`, sortOrder);
+    const where: any = {};
 
     if (productId) {
-      qb.andWhere('log.productId = :productId', { productId });
+      where.productId = productId;
     }
 
     if (type) {
-      qb.andWhere('log.type = :type', { type });
+      where.type = type;
     }
 
-    if (startDate) {
-      qb.andWhere('log.createdAt >= :startDate', { startDate });
+    if (startDate && endDate) {
+      where.createdAt = Between(new Date(startDate), new Date(endDate));
+    } else if (startDate) {
+      where.createdAt = MoreThanOrEqual(new Date(startDate));
+    } else if (endDate) {
+      where.createdAt = LessThanOrEqual(new Date(endDate));
     }
 
-    if (endDate) {
-      qb.andWhere('log.createdAt <= :endDate', { endDate });
-    }
-
-    const [data, total] = await qb.getManyAndCount();
+    const [data, total] = await this.inventoryLogRepo.findAndCount({
+      where,
+      relations: ['product', 'user'],
+      skip: (page - 1) * limit,
+      take: limit,
+      order: { [sortBy]: sortOrder },
+    });
 
     const totalPages = Math.ceil(total / limit);
 

@@ -11,32 +11,28 @@ function Calendar({
   return (
     <DayPicker
       showOutsideDays={showOutsideDays}
-      className={cn("p-3", className)}
+      className={cn(className)}
       classNames={{
         root: "w-full",
-        chevron: "fill-foreground",
-        month: "flex flex-col gap-4",
-        month_caption: "flex justify-center pt-1 relative items-center",
-        caption_label: "text-sm font-medium",
+        chevron: "fill-foreground size-3.5",
+        month: "flex flex-col gap-1",
+        month_caption: "flex justify-center pt-1 relative items-center h-8",
+        caption_label: "text-xs font-medium",
         nav: "flex items-center gap-1",
-        button_previous: cn(
-          "absolute left-1 inline-flex items-center justify-center rounded-xl text-sm font-medium transition-colors hover:bg-muted/40 h-7 w-7 bg-transparent p-0"
-        ),
-        button_next: cn(
-          "absolute right-1 inline-flex items-center justify-center rounded-xl text-sm font-medium transition-colors hover:bg-muted/40 h-7 w-7 bg-transparent p-0"
-        ),
-        weekday: "text-muted-foreground rounded-lg w-8 font-normal text-[0.8rem]",
+        button_previous:
+          "absolute left-1 inline-flex items-center justify-center rounded-lg transition-colors hover:bg-muted/40 size-7 bg-transparent p-0",
+        button_next:
+          "absolute right-1 inline-flex items-center justify-center rounded-lg transition-colors hover:bg-muted/40 size-7 bg-transparent p-0",
+        weekday: "text-muted-foreground rounded-lg w-7 text-[11px] font-normal",
         weekdays: "flex",
-        week: "flex w-full mt-2",
+        week: "flex w-full",
         day: cn(
-          "relative p-0 text-center text-sm focus-within:relative focus-within:z-20 inline-flex items-center justify-center rounded-lg h-8 w-8 p-0 font-normal transition-colors hover:bg-muted/40 aria-selected:opacity-100",
+          "relative p-0 text-center text-xs focus-within:relative focus-within:z-20 inline-flex items-center justify-center rounded-lg size-7 font-normal transition-colors hover:bg-muted/40 aria-selected:opacity-100",
           props.mode === "range"
             ? "group aria-selected:bg-muted aria-selected:text-foreground"
             : "aria-selected:bg-primary aria-selected:text-primary-foreground"
         ),
-        day_button: cn(
-          "h-8 w-8 p-0 font-normal"
-        ),
+        day_button: "size-7 p-0 font-normal text-xs",
         range_start:
           "aria-selected:rounded-l-lg aria-selected:bg-primary aria-selected:text-primary-foreground",
         range_end:

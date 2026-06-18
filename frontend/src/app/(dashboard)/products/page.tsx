@@ -119,8 +119,8 @@ export default function ProductsPage() {
     },
   ]
 
-  const products = data?.data?.data ?? []
-  const meta = data?.data?.meta
+  const products = data?.data ?? []
+  const meta = data?.meta
   const categories = categoriesRes?.data ?? []
 
   return (

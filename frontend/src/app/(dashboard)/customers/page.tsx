@@ -74,8 +74,8 @@ export default function CustomersPage() {
     },
   ]
 
-  const customers = data?.data?.data ?? []
-  const meta = data?.data?.meta
+  const customers = data?.data ?? []
+  const meta = data?.meta
 
   return (
     <div className="space-y-6">

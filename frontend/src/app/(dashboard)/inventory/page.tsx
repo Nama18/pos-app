@@ -113,8 +113,8 @@ export default function InventoryPage() {
 
   const products = productsRes?.data ?? []
   const lowStockProducts = lowStockRes?.data ?? []
-  const history = historyRes?.data?.data ?? []
-  const historyMeta = historyRes?.data?.meta
+  const history = historyRes?.data ?? []
+  const historyMeta = historyRes?.meta
 
   const stockInForm = useForm<StockInForm>({
     resolver: zodResolver(stockInSchema),

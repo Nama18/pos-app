@@ -35,7 +35,7 @@ export function CustomerSelector({ value, onChange }: CustomerSelectorProps) {
     enabled: open,
   })
 
-  const customers = data?.data?.data ?? []
+  const customers = data?.data ?? []
 
   return (
     <Popover open={open} onOpenChange={setOpen}>

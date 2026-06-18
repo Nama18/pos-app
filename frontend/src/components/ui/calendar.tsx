@@ -26,7 +26,7 @@ function Calendar({
           "absolute right-1 inline-flex items-center justify-center rounded-lg transition-colors hover:bg-muted/40 size-7 bg-transparent p-0",
         weekday: "text-muted-foreground rounded-lg w-7 text-[11px] font-normal",
         weekdays: "flex",
-        week: "flex w-full",
+        week: "flex",
         day: cn(
           "relative p-0 text-center text-xs focus-within:relative focus-within:z-20 inline-flex items-center justify-center rounded-lg size-7 font-normal transition-colors hover:bg-muted/40 aria-selected:opacity-100",
           props.mode === "range"

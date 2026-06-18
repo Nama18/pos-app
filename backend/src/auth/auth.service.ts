@@ -68,18 +68,7 @@ export class AuthService {
         throw new UnauthorizedException('Invalid refresh token');
       }
 
-      const accessToken = this.jwtService.sign(
-        { sub: user.id, email: user.email, role: user.role },
-        {
-          secret: this.configService.get<string>('JWT_ACCESS_SECRET'),
-          expiresIn: this.configService.get<string>(
-            'JWT_ACCESS_EXPIRES',
-            '15m',
-          ),
-        },
-      );
-
-      return { accessToken };
+      return this.generateTokens(user);
     } catch {
       throw new UnauthorizedException('Invalid refresh token');
     }

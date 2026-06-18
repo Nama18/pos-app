@@ -4,8 +4,8 @@ import { useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { DollarSign, Receipt, TrendingUp, Download } from 'lucide-react'
 import {
-  AreaChart,
-  Area,
+  BarChart,
+  Bar,
   XAxis,
   YAxis,
   CartesianGrid,
@@ -161,14 +161,8 @@ export default function SalesReportPage() {
           ) : (
             <div className="h-72">
               <ResponsiveContainer width="100%" height="100%">
-                <AreaChart data={salesData}>
-                  <defs>
-                    <linearGradient id="revGradient" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="var(--color-accent)" stopOpacity={0.3} />
-                      <stop offset="95%" stopColor="var(--color-accent)" stopOpacity={0} />
-                    </linearGradient>
-                  </defs>
-                  <CartesianGrid strokeDasharray="3 3" stroke="var(--color-border)" />
+                <BarChart data={salesData}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="var(--color-border)" vertical={false} />
                   <XAxis
                     dataKey="date"
                     tick={{ fontSize: 12, fill: 'var(--color-foreground)' }}
@@ -177,6 +171,7 @@ export default function SalesReportPage() {
                   />
                   <YAxis tick={{ fontSize: 12, fill: 'var(--color-foreground)' }} stroke="var(--color-border)" />
                   <Tooltip
+                    cursor={{ fill: 'var(--color-muted)' }}
                     contentStyle={{
                       background: 'var(--color-card)',
                       border: '1px solid var(--color-border)',
@@ -186,14 +181,12 @@ export default function SalesReportPage() {
                     labelStyle={{ color: 'var(--color-foreground)' }}
                     itemStyle={{ color: 'var(--color-foreground)' }}
                   />
-                  <Area
-                    type="monotone"
+                  <Bar
                     dataKey="total"
-                    stroke="var(--color-accent)"
-                    fill="url(#revGradient)"
-                    strokeWidth={2}
+                    fill="var(--color-accent)"
+                    radius={[4, 4, 0, 0]}
                   />
-                </AreaChart>
+                </BarChart>
               </ResponsiveContainer>
             </div>
           )}

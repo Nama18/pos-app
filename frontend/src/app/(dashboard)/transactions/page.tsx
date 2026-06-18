@@ -59,11 +59,10 @@ export default function TransactionsPage() {
   const { data, isLoading } = useQuery({
     queryKey: ['transactions', page, search, paymentMethod, startDate, endDate],
     queryFn: () =>
-      get<{ success: boolean; data: Transaction[]; meta: { page: number; limit: number; total: number; totalPages: number; hasNextPage?: boolean; hasPreviousPage?: boolean } }>('/pos/transactions', {
+      get<{ success: boolean; data: Transaction[]; meta: { page: number; limit: number; total: number; totalPages: number; hasNextPage?: boolean; hasPreviousPage?: boolean } }>('/transactions', {
         params: {
           page,
           limit: 10,
-          search,
           paymentMethod,
           startDate: startDate || undefined,
           endDate: endDate || undefined,

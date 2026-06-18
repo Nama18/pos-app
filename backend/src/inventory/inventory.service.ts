@@ -131,7 +131,7 @@ export class InventoryService {
         throw new NotFoundException('Product not found');
       }
 
-      product.stock = dto.quantity;
+      product.stock += dto.quantity;
       await queryRunner.manager.save(product);
 
       const log = queryRunner.manager.create(InventoryLog, {

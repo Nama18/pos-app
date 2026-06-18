@@ -69,6 +69,7 @@ const stockOutSchema = z.object({
 const adjustmentSchema = z.object({
   productId: z.string().min(1, 'Product is required'),
   quantity: z.coerce.number().int(),
+  reason: z.string().min(1, 'Reason is required'),
   notes: z.string().optional(),
 })
 
@@ -410,7 +411,7 @@ export default function InventoryPage() {
                     </SelectContent>
                   </Select>
                 </div>
-                <div className="grid gap-4 sm:grid-cols-2">
+                <div className="grid gap-4 sm:grid-cols-3">
                   <div className="space-y-2">
                     <Label htmlFor="adjQty">Quantity Change</Label>
                     <Input
@@ -424,10 +425,23 @@ export default function InventoryPage() {
                     </p>
                   </div>
                   <div className="space-y-2">
+                    <Label htmlFor="adjReason">Reason</Label>
+                    <Input
+                      id="adjReason"
+                      placeholder="Required"
+                      {...adjustmentForm.register('reason')}
+                    />
+                    {adjustmentForm.formState.errors.reason && (
+                      <p className="text-xs text-destructive">
+                        {adjustmentForm.formState.errors.reason.message}
+                      </p>
+                    )}
+                  </div>
+                  <div className="space-y-2">
                     <Label htmlFor="adjNotes">Notes</Label>
                     <Input
                       id="adjNotes"
-                      placeholder="Reason for adjustment"
+                      placeholder="Optional"
                       {...adjustmentForm.register('notes')}
                     />
                   </div>

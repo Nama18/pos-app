@@ -6,7 +6,6 @@ export class AdjustDto {
   productId: string;
 
   @IsInt()
-  @Min(0)
   quantity: number;
 
   @IsString()

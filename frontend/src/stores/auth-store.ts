@@ -41,9 +41,10 @@ export const useAuthStore = create<AuthState>((set) => ({
     }
 
     const json = await response.json()
-    const { user, accessToken } = json.data
+    const { user, accessToken, refreshToken } = json.data
 
     localStorage.setItem('token', accessToken)
+    localStorage.setItem('refreshToken', refreshToken)
     localStorage.setItem('user', JSON.stringify(user))
     setCookie('token', accessToken)
 
@@ -52,6 +53,7 @@ export const useAuthStore = create<AuthState>((set) => ({
 
   logout: () => {
     localStorage.removeItem('token')
+    localStorage.removeItem('refreshToken')
     localStorage.removeItem('user')
     removeCookie('token')
     set({ user: null, token: null, isAuthenticated: false })

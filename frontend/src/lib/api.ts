@@ -1,5 +1,58 @@
-import axios, { AxiosError, type AxiosRequestConfig } from 'axios'
+import axios, { AxiosError, type AxiosRequestConfig, type AxiosResponse } from 'axios'
 import toast from 'react-hot-toast'
+
+let isRefreshing = false
+let refreshPromise: Promise<boolean> | null = null
+let failedQueue: Array<{
+  resolve: (token: string) => void
+  reject: (error: unknown) => void
+}> = []
+
+function processQueue(error: unknown, token: string | null) {
+  failedQueue.forEach(({ resolve, reject }) => {
+    if (error) {
+      reject(error)
+    } else {
+      resolve(token!)
+    }
+  })
+  failedQueue = []
+}
+
+function clearAuth() {
+  if (typeof window === 'undefined') return
+  localStorage.removeItem('token')
+  localStorage.removeItem('refreshToken')
+  localStorage.removeItem('user')
+  document.cookie = 'token=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/'
+}
+
+async function attemptRefresh(): Promise<boolean> {
+  const refreshToken = localStorage.getItem('refreshToken')
+  if (!refreshToken) return false
+
+  try {
+    const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000/api/v1'
+    const response = await fetch(`${baseUrl}/auth/refresh`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ refreshToken }),
+    })
+
+    if (!response.ok) return false
+
+    const json = await response.json()
+    const { accessToken, refreshToken: newRefreshToken } = json.data
+
+    localStorage.setItem('token', accessToken)
+    localStorage.setItem('refreshToken', newRefreshToken)
+    document.cookie = `token=${encodeURIComponent(accessToken)}; path=/`
+
+    return true
+  } catch {
+    return false
+  }
+}
 
 const api = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000/api/v1',
@@ -19,19 +72,49 @@ api.interceptors.request.use((config) => {
 })
 
 api.interceptors.response.use(
-  (response) => response,
-  (error: AxiosError<{ message?: string }>) => {
-    if (error.response?.status === 401) {
-      localStorage.removeItem('token')
-      if (typeof window !== 'undefined') {
-        window.location.href = '/login'
+  (response: AxiosResponse) => response,
+  async (error: AxiosError<{ message?: string }>) => {
+    const originalRequest = error.config as AxiosRequestConfig & { _retry?: boolean }
+
+    if (error.response?.status !== 401 || originalRequest._retry) {
+      const message = error.response?.data?.message || error.message || 'An unexpected error occurred'
+      toast.error(message)
+      return Promise.reject(error)
+    }
+
+    if (isRefreshing) {
+      try {
+        const token = await refreshPromise!
+        originalRequest.headers = originalRequest.headers || {}
+        originalRequest.headers.Authorization = `Bearer ${token}`
+        return api(originalRequest)
+      } catch {
+        return Promise.reject(error)
       }
     }
 
-    const message = error.response?.data?.message || error.message || 'An unexpected error occurred'
-    toast.error(message)
+    originalRequest._retry = true
+    isRefreshing = true
+    refreshPromise = attemptRefresh()
 
-    return Promise.reject(error)
+    try {
+      const success = await refreshPromise
+      if (!success) {
+        clearAuth()
+        window.location.href = '/login'
+        return Promise.reject(error)
+      }
+
+      const newToken = localStorage.getItem('token')!
+      processQueue(null, newToken)
+
+      originalRequest.headers = originalRequest.headers || {}
+      originalRequest.headers.Authorization = `Bearer ${newToken}`
+      return api(originalRequest)
+    } finally {
+      isRefreshing = false
+      refreshPromise = null
+    }
   }
 )
 

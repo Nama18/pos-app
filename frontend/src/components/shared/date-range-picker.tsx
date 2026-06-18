@@ -101,17 +101,18 @@ export function DateRangePicker({ value, onChange }: DateRangePickerProps) {
         </Button>
       </PopoverTrigger>
       <PopoverContent
-        className="w-auto p-2"
+        className="p-1"
         align="start"
         sideOffset={4}
+        style={{ width: 'auto', minWidth: 0 }}
       >
-        <div className="space-y-2">
-          <div className="flex items-center gap-0.5 rounded-lg bg-muted/50 p-0.5">
+        <div className="flex flex-col gap-1">
+          <div className="flex rounded-md bg-muted/50 p-0.5">
             <button
               type="button"
               onClick={() => setMode('single')}
               className={cn(
-                'flex-1 rounded-md px-2 py-1 text-[11px] font-medium transition-colors',
+                'flex-1 rounded px-2 py-0.5 text-[11px] font-medium transition-colors',
                 mode === 'single'
                   ? 'bg-card text-foreground shadow-sm'
                   : 'text-muted-foreground hover:text-foreground'
@@ -123,7 +124,7 @@ export function DateRangePicker({ value, onChange }: DateRangePickerProps) {
               type="button"
               onClick={() => setMode('range')}
               className={cn(
-                'flex-1 rounded-md px-2 py-1 text-[11px] font-medium transition-colors',
+                'flex-1 rounded px-2 py-0.5 text-[11px] font-medium transition-colors',
                 mode === 'range'
                   ? 'bg-card text-foreground shadow-sm'
                   : 'text-muted-foreground hover:text-foreground'
@@ -133,34 +134,32 @@ export function DateRangePicker({ value, onChange }: DateRangePickerProps) {
             </button>
           </div>
 
-          <div className={mode === 'range' ? 'flex gap-2' : ''}>
-            {mode === 'single' ? (
-              <Calendar
-                mode="single"
-                selected={value.from}
-                onSelect={(date) => {
-                  onChange({ from: date, to: date })
-                  if (date) setOpen(false)
-                }}
-                showOutsideDays
-              />
-            ) : (
-              <Calendar
-                mode="range"
-                selected={value}
-                onSelect={(range) => {
-                  onChange(range ?? { from: undefined })
-                  if (range?.from && range?.to) setOpen(false)
-                }}
-                numberOfMonths={2}
-                showOutsideDays
-              />
-            )}
-          </div>
+          {mode === 'single' ? (
+            <Calendar
+              mode="single"
+              selected={value.from}
+              onSelect={(date) => {
+                onChange({ from: date, to: date })
+                if (date) setOpen(false)
+              }}
+              showOutsideDays
+            />
+          ) : (
+            <Calendar
+              mode="range"
+              selected={value}
+              onSelect={(range) => {
+                onChange(range ?? { from: undefined })
+                if (range?.from && range?.to) setOpen(false)
+              }}
+              numberOfMonths={2}
+              showOutsideDays
+            />
+          )}
 
           <Separator />
 
-          <div className="flex flex-wrap gap-1">
+          <div className="flex flex-wrap gap-0.5">
             {presets.map((preset) => (
               <button
                 key={preset.label}
@@ -169,7 +168,7 @@ export function DateRangePicker({ value, onChange }: DateRangePickerProps) {
                   onChange(preset.getValue())
                   setOpen(false)
                 }}
-                className="rounded-md border border-border px-2 py-0.5 text-[11px] text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+                className="rounded border border-border px-1.5 py-0.5 text-[11px] text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
               >
                 {preset.label}
               </button>

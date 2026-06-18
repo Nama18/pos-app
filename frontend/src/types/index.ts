@@ -98,13 +98,20 @@ export interface TransactionItem {
 export interface InventoryLog {
   id: string
   productId: string
-  productName: string
-  productSku: string
   type: InventoryType
   quantity: number
   reference?: string
   notes?: string
-  user: { name: string }
+  product: {
+    id: string
+    name: string
+    sku: string
+  }
+  user: {
+    id: string
+    name: string
+    email: string
+  }
   createdAt: string
 }
 

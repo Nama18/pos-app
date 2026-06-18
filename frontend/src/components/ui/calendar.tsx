@@ -13,9 +13,10 @@ function Calendar({
       showOutsideDays={showOutsideDays}
       className={cn(className)}
       classNames={{
-        root: "w-full",
+        root: "w-fit",
         chevron: "fill-foreground size-3.5",
-        month: "flex flex-col gap-1",
+        months: "flex gap-1",
+        month: "flex flex-col gap-0.5",
         month_caption: "flex justify-center pt-1 relative items-center h-8",
         caption_label: "text-xs font-medium",
         nav: "flex items-center gap-1",

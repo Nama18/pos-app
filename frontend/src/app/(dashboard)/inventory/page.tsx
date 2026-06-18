@@ -130,30 +130,33 @@ export default function InventoryPage() {
 
   const stockInMutation = useMutation({
     mutationFn: (data: StockInForm) =>
-      post('/inventory/stock-in', data),
-    onSuccess: () => {
+      post<{ data: { product: { name: string }; quantity: number } }>('/inventory/stock-in', data),
+    onSuccess: (res) => {
+      const { product, quantity } = (res as any).data ?? (res as any)
       queryClient.invalidateQueries({ queryKey: ['inventory'] })
-      toast.success('Stock added')
+      toast.success(`Stock in: ${product?.name ?? 'Unknown'} (+${quantity})`)
       stockInForm.reset()
     },
   })
 
   const stockOutMutation = useMutation({
     mutationFn: (data: StockOutForm) =>
-      post('/inventory/stock-out', data),
-    onSuccess: () => {
+      post<{ data: { product: { name: string }; quantity: number } }>('/inventory/stock-out', data),
+    onSuccess: (res) => {
+      const { product, quantity } = (res as any).data ?? (res as any)
       queryClient.invalidateQueries({ queryKey: ['inventory'] })
-      toast.success('Stock removed')
+      toast.success(`Stock out: ${product?.name ?? 'Unknown'} (-${quantity})`)
       stockOutForm.reset()
     },
   })
 
   const adjustmentMutation = useMutation({
     mutationFn: (data: AdjustmentForm) =>
-      post('/inventory/adjust', data),
-    onSuccess: () => {
+      post<{ data: { product: { name: string }; quantity: number; reason: string } }>('/inventory/adjust', data),
+    onSuccess: (res) => {
+      const { product, quantity, reason } = (res as any).data ?? (res as any)
       queryClient.invalidateQueries({ queryKey: ['inventory'] })
-      toast.success('Stock adjusted')
+      toast.success(`Adjusted: ${product?.name ?? 'Unknown'} (${quantity >= 0 ? '+' : ''}${quantity})${reason ? ` — ${reason}` : ''}`)
       adjustmentForm.reset()
     },
   })
@@ -490,10 +493,10 @@ export default function InventoryPage() {
                           {formatDate(log.createdAt)}
                         </TableCell>
                         <TableCell className="font-medium text-foreground">
-                          {log.productName}
+                          {log.product?.name ?? '-'}
                         </TableCell>
                         <TableCell className="font-mono text-xs">
-                          {log.productSku}
+                          {log.product?.sku ?? '-'}
                         </TableCell>
                         <TableCell>
                           <Badge variant={typeVariants[log.type]}>

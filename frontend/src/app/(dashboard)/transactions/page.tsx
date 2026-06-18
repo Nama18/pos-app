@@ -8,9 +8,9 @@ import { Eye } from 'lucide-react'
 import { PageHeader } from '@/components/shared/page-header'
 import { DataTable, type Column } from '@/components/shared/data-table'
 import { FilterBar } from '@/components/shared/filter-bar'
+import { DateRangePicker } from '@/components/shared/date-range-picker'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import {
   Select,
@@ -20,6 +20,7 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { get } from '@/lib/api'
+import { type DateRange } from 'react-day-picker'
 import type { Transaction } from '@/types'
 
 function formatCurrency(value: number) {
@@ -53,8 +54,10 @@ export default function TransactionsPage() {
   const [page, setPage] = useState(1)
   const [search, setSearch] = useState('')
   const [paymentMethod, setPaymentMethod] = useState<string | null>(null)
-  const [startDate, setStartDate] = useState('')
-  const [endDate, setEndDate] = useState('')
+  const [dateRange, setDateRange] = useState<DateRange>({ from: undefined })
+
+  const startDate = dateRange.from?.toISOString()
+  const endDate = dateRange.to?.toISOString()
 
   const { data, isLoading } = useQuery({
     queryKey: ['transactions', page, search, paymentMethod, startDate, endDate],
@@ -64,8 +67,8 @@ export default function TransactionsPage() {
           page,
           limit: 10,
           paymentMethod,
-          startDate: startDate || undefined,
-          endDate: endDate || undefined,
+          startDate,
+          endDate,
         },
       }),
   })
@@ -155,21 +158,10 @@ export default function TransactionsPage() {
       <FilterBar>
         <div className="flex items-end gap-3">
           <div className="space-y-1.5">
-            <Label className="text-xs text-muted-foreground">From</Label>
-            <Input
-              type="date"
-              value={startDate}
-              onChange={(e) => { setStartDate(e.target.value); setPage(1) }}
-              className="h-9 w-36 text-xs"
-            />
-          </div>
-          <div className="space-y-1.5">
-            <Label className="text-xs text-muted-foreground">To</Label>
-            <Input
-              type="date"
-              value={endDate}
-              onChange={(e) => { setEndDate(e.target.value); setPage(1) }}
-              className="h-9 w-36 text-xs"
+            <Label className="text-xs text-muted-foreground">Date</Label>
+            <DateRangePicker
+              value={dateRange}
+              onChange={(range) => { setDateRange(range); setPage(1) }}
             />
           </div>
           <Select
